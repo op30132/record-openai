@@ -1,0 +1,9 @@
+sounddevice
+openai
+requests
+argparse
+NumPy
+scipy
+soundfile
+datetime
+python-dotenv
