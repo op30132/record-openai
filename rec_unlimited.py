@@ -21,7 +21,7 @@ load_dotenv()
 if os.getenv("API_KEY") is None:
     print("API_KEY not found in .env file")
     exit()
-    
+
 openai.api_key=os.getenv("API_KEY")
 SHORT_NORMALIZE = (1.0/32768.0)
 
@@ -51,6 +51,12 @@ def rms(frame):
 
 def send_api_request(filename):
     if not os.path.exists(filename):
+        return
+    with sf.SoundFile(filename, 'r') as f:
+        length = len(f) / f.samplerate
+    if length < 1:
+        os.remove(filename)
+        print("Recording too short, try again")
         return
     text = gpt_transcript(filename)
     print(text)
@@ -93,12 +99,13 @@ def main():
     def callback(indata, frames, time, status):
         if status:
             print(status, file=sys.stderr)
+            return
         q.put(indata.copy())
         rms = numpy.sqrt(numpy.mean(indata**2))
         if rms > args.threshold:
             callback.last_sound_time = datetime.now()
         else:
-            if callback.last_sound_time is not None and (datetime.now() - callback.last_sound_time).total_seconds() > 1:
+            if callback.last_sound_time is not None and (datetime.now() - callback.last_sound_time).total_seconds() > 0.95:
                 callback.last_sound_time = None
                 raise sd.CallbackAbort
 
@@ -132,18 +139,10 @@ def main():
                                     file.write(q.get())
 
                 except KeyboardInterrupt:
-                    print('\nKeyboardInterrupt: Recording finished')
                     stop_recording = True
-                    if os.path.exists(filename):
-                        with sf.SoundFile(filename, 'r') as f:
-                            length = len(f) / f.samplerate
-                        if length < 1:
-                            os.remove(filename)
-                            print("Recording too short, try again")
-                        else:
-                            t = threading.Thread(target=send_api_request, args=(filename,))
-                            t.start()
-                            t.join()
+                    t = threading.Thread(target=send_api_request, args=(filename,))
+                    t.start()
+                    t.join()
                     print("Press 's' to start recording again")
                     print("Press 'q' to quit")
             if cmd== "q":
