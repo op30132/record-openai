@@ -7,3 +7,4 @@ scipy
 soundfile
 datetime
 python-dotenv
+static_vars
