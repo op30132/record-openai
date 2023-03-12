@@ -7,17 +7,17 @@ This repository contains a Python script for recording audio and using OpenAI's 
 1. Clone the repository to your local machine.
 2. Install the required libraries using pip:
    ```bash
-   $ python -m venv venv
+   python -m venv venv
    ```
    ```bash
-   $ . venv/bin/activate
+   . venv/bin/activate
    ```
    ```bash
-   $ pip install -r requirements.txt
+   pip install -r requirements.txt
    ```
 3. Create a file named .env in the project directory and add your OpenAI API key as API_KEY=<your_api_key>
    ```bash
-   $ cp .env.example .env
+   cp .env.example .env
    ```
 
 ## Usage
@@ -25,7 +25,7 @@ This repository contains a Python script for recording audio and using OpenAI's 
 Run the script using the following command:
 
 ```bash
-$ python rec_unlimited.py [-l] [-d DEVICE] [-r SAMPLERATE] [-c CHANNELS] [-s SUBTYPE] [-t THRESHOLD]
+python rec_unlimited.py [-l] [-d DEVICE] [-r SAMPLERATE] [-c CHANNELS] [-s SUBTYPE] [-t THRESHOLD]
 ```
 
 Arguments:
