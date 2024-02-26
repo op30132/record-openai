@@ -165,16 +165,16 @@ def main():
     args = parser.parse_args()
     if args.search == "search":
         while True:
+            print('press q to quit')
             url = input("Enter the youtube url: ")
-            if url == "exit":
-                break
+            if url== "q":
+                exit()
             temp_file = f"video.mp4"
             os.remove(temp_file) if os.path.exists(temp_file) else None
             download_video(url, args.private, "mp4")
             text = gpt_large_file_transcript(temp_file)
             summary = gpt_summary(text)
             print(summary)
-            parser.exit(0)
     parser.add_argument(
         '-l', '--list-devices', action='store_true',
         help='show list of audio devices and exit')
@@ -223,6 +223,9 @@ def main():
                         if status:
                             print(status, file=sys.stderr)
                         q.put(indata.copy())
+                        # squared_magnitudes = numpy.square(numpy.abs(indata))
+                        # mean_squared_magnitudes = numpy.mean(squared_magnitudes)
+                        # rms = numpy.sqrt(mean_squared_magnitudes)
                         rms = numpy.sqrt(numpy.mean(indata**2))
                         if rms > args.threshold:
                             callback.last_sound_time = datetime.now()
